@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Anton", "Oswald", sans-serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: 'Anton', 'Oswald', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Glass and glow helpers */
+.glow-lime {
+  box-shadow: 0 0 35px -5px rgba(204, 255, 0, 0.35);
+}
+
+.glow-blue {
+  box-shadow: 0 0 30px -4px rgba(30, 90, 255, 0.45);
+}
+
