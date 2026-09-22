@@ -11,7 +11,6 @@ export const FeaturedAthletes: React.FC<FeaturedAthletesProps> = ({ onSelectAthl
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const dragBadgeRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const poweredByRef = useRef<HTMLDivElement>(null);
@@ -23,7 +22,7 @@ export const FeaturedAthletes: React.FC<FeaturedAthletesProps> = ({ onSelectAthl
   const [scrollLeft, setScrollLeft] = useState(0);
   const [hasMoved, setHasMoved] = useState(false);
 
-  // GSAP ScrollTrigger Entrance & Cursor Follower
+  // GSAP ScrollTrigger Entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Entrance Animation
@@ -79,55 +78,6 @@ export const FeaturedAthletes: React.FC<FeaturedAthletesProps> = ({ onSelectAthl
     const cleanExos = attachMagneticEffect(exosPillRef.current, 0.25);
     const cleanOmaha = attachMagneticEffect(omahaPillRef.current, 0.25);
 
-    // Dynamic Cursor Tracking for DRAG Bubble
-    const container = containerRef.current;
-    const badge = dragBadgeRef.current;
-
-    let quickX: (val: number) => void;
-    let quickY: (val: number) => void;
-
-    if (badge && container) {
-      quickX = gsap.quickTo(badge, 'x', { duration: 0.45, ease: 'power3' });
-      quickY = gsap.quickTo(badge, 'y', { duration: 0.45, ease: 'power3' });
-
-      const handlePointerMove = (e: PointerEvent) => {
-        const rect = container.getBoundingClientRect();
-        const x = e.clientX - rect.left - 36;
-        const y = e.clientY - rect.top - 36;
-        quickX(x);
-        quickY(y);
-      };
-
-      const handlePointerEnter = () => {
-        gsap.to(badge, {
-          scale: 1,
-          opacity: 1,
-          duration: 0.3,
-          ease: 'power2.out',
-        });
-      };
-
-      const handlePointerLeave = () => {
-        // Return to center
-        const rect = container.getBoundingClientRect();
-        quickX(rect.width / 2 - 36);
-        quickY(rect.height / 2 - 36);
-      };
-
-      container.addEventListener('pointermove', handlePointerMove);
-      container.addEventListener('pointerenter', handlePointerEnter);
-      container.addEventListener('pointerleave', handlePointerLeave);
-
-      return () => {
-        ctx.revert();
-        cleanExos();
-        cleanOmaha();
-        container.removeEventListener('pointermove', handlePointerMove);
-        container.removeEventListener('pointerenter', handlePointerEnter);
-        container.removeEventListener('pointerleave', handlePointerLeave);
-      };
-    }
-
     return () => {
       ctx.revert();
       cleanExos();
@@ -141,36 +91,14 @@ export const FeaturedAthletes: React.FC<FeaturedAthletesProps> = ({ onSelectAthl
     setHasMoved(false);
     setStartX(e.pageX - scrollRef.current.offsetLeft);
     setScrollLeft(scrollRef.current.scrollLeft);
-
-    if (dragBadgeRef.current) {
-      gsap.to(dragBadgeRef.current, {
-        scale: 0.85,
-        backgroundColor: '#0f48e6',
-        duration: 0.2,
-      });
-    }
   };
 
   const handleMouseLeave = () => {
     setIsDragging(false);
-    if (dragBadgeRef.current) {
-      gsap.to(dragBadgeRef.current, {
-        scale: 1,
-        backgroundColor: '#1e5aff',
-        duration: 0.3,
-      });
-    }
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    if (dragBadgeRef.current) {
-      gsap.to(dragBadgeRef.current, {
-        scale: 1,
-        backgroundColor: '#1e5aff',
-        duration: 0.3,
-      });
-    }
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -203,17 +131,8 @@ export const FeaturedAthletes: React.FC<FeaturedAthletesProps> = ({ onSelectAthl
           </p>
         </div>
 
-        {/* Carousel Container with Interactive Floating DRAG Bubble */}
+        {/* Carousel Container */}
         <div ref={containerRef} className="relative select-none">
-          {/* Floating Electric Blue DRAG Badge */}
-          <div
-            ref={dragBadgeRef}
-            className="pointer-events-none absolute left-0 top-0 z-30 hidden md:flex items-center justify-center w-[74px] h-[74px] rounded-full bg-[#1e5aff] text-white font-bold text-xs tracking-wider uppercase shadow-[0_12px_28px_rgba(30,90,255,0.45)] ring-4 ring-white/50 cursor-grab will-change-transform"
-            style={{ transform: 'translate3d(500px, 160px, 0)' }}
-          >
-            DRAG
-          </div>
-
           <div
             ref={scrollRef}
             onMouseDown={handleMouseDown}
